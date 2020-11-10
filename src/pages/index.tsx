@@ -40,7 +40,9 @@ export default function Home(): React.ReactElement {
       (place, index) =>
         response.map(item => item.id).indexOf(place.id) === index
     )
-    const data = nonDuplicate.filter(place => place.rating >= filterRating / 5)
+    const data = nonDuplicate
+      .map(place => ({ ...place, rating: Math.floor(place.rating * 5) }))
+      .filter(place => place.rating >= filterRating)
 
     setPlaces(data)
     setLastSearch({ term: search, rating: filterRating })
@@ -122,7 +124,7 @@ export default function Home(): React.ReactElement {
             <div className="flex-grow space-y-1">
               <div className="flex justify-between w-full">
                 <h2>{place.name}</h2>
-                <Rating value={place.rating * 5} readOnly />
+                <Rating value={place.rating} readOnly />
               </div>
 
               <div className="flex space-x-3 m">
