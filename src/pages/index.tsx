@@ -1,3 +1,4 @@
+/* eslint-disable multiline-ternary */
 import Head from 'next/head'
 import Link from 'next/link'
 import GooglePlacesMock from 'google-maps-places-mock'
@@ -13,12 +14,12 @@ export default function Home(): React.ReactElement {
   const [places, setPlaces] = useState([])
 
   useEffect(() => {
-    if (navigator?.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos: Position) => {
-        setPosition(pos)
-        getPlaces(pos)
-      })
-    }
+    // if (navigator?.geolocation) {
+    navigator.geolocation.getCurrentPosition((pos: Position) => {
+      setPosition(pos)
+      getPlaces(pos)
+    })
+    // }
   }, [])
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -26,11 +27,22 @@ export default function Home(): React.ReactElement {
   }, [])
 
   async function getPlaces(pos: Position) {
-    if (!pos) return
+    const mockPosition: Position = pos || {
+      coords: {
+        latitude: 0,
+        longitude: 0,
+        accuracy: null,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null
+      },
+      timestamp: Date.now()
+    }
     const request = new GooglePlacesMock(
       {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
+        lat: mockPosition.coords.latitude,
+        lng: mockPosition.coords.longitude
       },
       500
     )
@@ -114,46 +126,50 @@ export default function Home(): React.ReactElement {
           } stars`}
         </h1>
 
-        {places.map(place => (
-          <div
-            key={place.id}
-            className="bg-white w-full max-w-6xl rounded p-5 flex space-x-5"
-          >
-            <img src="/schoolPic.png" alt="" className="rounded" />
+        {!position ? (
+          <div>You need to enable location so we can query nearby places</div>
+        ) : (
+          places.map(place => (
+            <div
+              key={place.id}
+              className="bg-white w-full max-w-6xl rounded p-5 flex space-x-5"
+            >
+              <img src="/schoolPic.png" alt="" className="rounded" />
 
-            <div className="flex-grow space-y-1">
-              <div className="flex justify-between w-full">
-                <h2>{place.name}</h2>
-                <Rating value={place.rating} readOnly />
-              </div>
-
-              <div className="flex space-x-3 m">
-                <div className="flex space-x-1 items-center text-gray-600 text-sm">
-                  <AiFillIdcard size={16} color="#22a8e1" />
-                  <p>R. Álvares de Azevedo, 50</p>
+              <div className="flex-grow space-y-1">
+                <div className="flex justify-between w-full">
+                  <h2>{place.name}</h2>
+                  <Rating value={place.rating} readOnly />
                 </div>
 
-                <div className="flex space-x-1 items-center text-gray-600 text-sm">
-                  <AiFillClockCircle size={16} color="#00b8d1" />
-                  <p>10 minutes</p>
-                </div>
-              </div>
+                <div className="flex space-x-3 m">
+                  <div className="flex space-x-1 items-center text-gray-600 text-sm">
+                    <AiFillIdcard size={16} color="#22a8e1" />
+                    <p>R. Álvares de Azevedo, 50</p>
+                  </div>
 
-              <div className="text-gray-700">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </p>
+                  <div className="flex space-x-1 items-center text-gray-600 text-sm">
+                    <AiFillClockCircle size={16} color="#00b8d1" />
+                    <p>10 minutes</p>
+                  </div>
+                </div>
+
+                <div className="text-gray-700">
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident, sunt in culpa qui officia
+                    deserunt mollit anim id est laborum.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   )
