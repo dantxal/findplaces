@@ -126,15 +126,18 @@ export default function Home(): React.ReactElement {
           } stars`}
         </h1>
 
-        {!position ? (
-          <div>You need to enable location so we can query nearby places</div>
-        ) : (
+        {places.length ? (
           places.map(place => (
             <div
               key={place.id}
               className="bg-white w-full max-w-6xl rounded p-5 flex space-x-5"
             >
-              <img src="/schoolPic.png" alt="" className="rounded" />
+              <img
+                style={{ width: 360, height: 300 }}
+                src="/schoolPic.png"
+                alt=""
+                className="rounded"
+              />
 
               <div className="flex-grow space-y-1">
                 <div className="flex justify-between w-full">
@@ -169,6 +172,8 @@ export default function Home(): React.ReactElement {
               </div>
             </div>
           ))
+        ) : (
+          <div>No place found with these search parameters</div>
         )}
       </div>
     </div>
